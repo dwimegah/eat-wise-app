@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CapstoneApp</string>
+    <string name="menu_diary">Diary</string>
+    <string name="desc_diary">diary_page</string>
+    <string name="section_goals">Goals Kamu</string>
+    <string name="section_diary">Udah makan apa aja?</string>
+    <string name="title_diary">Diary Gizi-Ku</string>
+</resources>
