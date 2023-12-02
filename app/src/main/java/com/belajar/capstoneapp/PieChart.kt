@@ -47,8 +47,8 @@ fun PieChart(
     val colors = listOf(
         Orange100,
         Teal100,
-        White100,
         Green200,
+        White100,
     )
 
     var animationPlayed by remember { mutableStateOf(false) }

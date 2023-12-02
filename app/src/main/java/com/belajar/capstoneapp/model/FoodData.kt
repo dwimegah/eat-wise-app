@@ -7,9 +7,9 @@ object FoodData {
         Food(
             "1",
             "Telur",
-            "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
+            "https://cardamomandcoconut.com/wp-content/uploads/2019/02/Instant-Pot-Banana-Oatmeal-10.jpg",
             "Telur adalah salah satu sumber protein hewani yang memiliki rasa yang lezat, mudah dicerna, dan bergizi tinggi.",
-            "Hewani"
+            "Sarapan"
         ),
         Food(
             "2",

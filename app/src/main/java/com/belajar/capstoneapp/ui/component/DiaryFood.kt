@@ -1,7 +1,9 @@
 package com.belajar.capstoneapp.ui.component
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +30,7 @@ import coil.compose.AsyncImage
 import com.belajar.capstoneapp.model.FoodData
 import com.belajar.capstoneapp.ui.theme.Dark100
 import com.belajar.capstoneapp.ui.theme.Green100
+import com.belajar.capstoneapp.ui.theme.Green200
 import com.belajar.capstoneapp.ui.theme.Green300
 
 @Composable
@@ -101,12 +105,32 @@ fun DiaryItem(
                     text = "300 Kalori",
                     color = Dark100
                 )
-                OutlinedButton(
-                    onClick = { },
-                ) {
-                    Text("Sarapan")
-                }
+                Category(category)
             }
+        }
+    }
+}
+
+@Composable
+fun Category(
+    category: String
+) {
+    Card(
+        modifier = Modifier
+            .padding(top = 5.dp, bottom = 10.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(Green200)
+                .padding(start = 10.dp, end = 10.dp)
+        ) {
+            Text(
+                fontSize = 14.sp,
+                text = category,
+                color = Green300,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
