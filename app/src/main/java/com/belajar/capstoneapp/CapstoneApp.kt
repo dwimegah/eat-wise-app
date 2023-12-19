@@ -2,6 +2,7 @@ package com.belajar.capstoneapp
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -38,6 +39,8 @@ import com.belajar.capstoneapp.ui.screen.home.HomeScreen
 import com.belajar.capstoneapp.ui.screen.list.ListScreen
 import com.belajar.capstoneapp.ui.screen.list.SearchScreen
 import com.belajar.capstoneapp.ui.screen.login.LoginScreen
+import com.belajar.capstoneapp.ui.screen.login.RegisterScreen
+import com.belajar.capstoneapp.ui.screen.profile.ProfileScreen
 import com.belajar.capstoneapp.ui.theme.CapstoneAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +73,7 @@ fun CapstoneApp (
             }
         },
         bottomBar = {
-            if (currentRoute != Screen.DetailScreen.route && currentRoute != Screen.Login.route && currentRoute != Screen.ListScreen.route) {
+            if (currentRoute != Screen.DetailScreen.route && currentRoute != Screen.Login.route && currentRoute != Screen.ListScreen.route && currentRoute != Screen.Register.route) {
                 BottomBar(navController)
             }
         },
@@ -83,6 +86,16 @@ fun CapstoneApp (
         ) {
             composable(Screen.Login.route) {
                 LoginScreen(
+                    navController = navController
+                )
+            }
+            composable(Screen.Register.route) {
+                RegisterScreen(
+                    navController = navController
+                )
+            }
+            composable(Screen.Profile.route) {
+                ProfileScreen(
                     navController = navController
                 )
             }
@@ -185,6 +198,12 @@ private fun BottomBar(
                 desc = "Diary Screen",
                 icon = Icons.Default.Favorite,
                 screen = Screen.Diary
+            ),
+            NavigationItem(
+                title = "Profile",
+                desc = "Profile Screen",
+                icon = Icons.Default.AccountCircle,
+                screen = Screen.Profile
             )
         )
         navigationItems.map { item ->
