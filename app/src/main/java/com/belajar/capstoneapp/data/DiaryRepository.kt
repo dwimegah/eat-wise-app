@@ -1,13 +1,29 @@
 package com.belajar.capstoneapp.data
 
 import com.belajar.capstoneap.model.Food
+import com.belajar.capstoneapp.data.pref.UserModel
+import com.belajar.capstoneapp.data.pref.UserPreference
 import com.belajar.capstoneapp.model.FoodData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
-class DiaryRepository {
+class DiaryRepository private constructor(
+    private val userPreference: UserPreference
+) {
     private val dummyFood = mutableListOf<Food>()
+
+    suspend fun saveSession(user: UserModel) {
+        userPreference.saveSession(user)
+    }
+
+    fun getSession(): Flow<UserModel> {
+        return userPreference.getSession()
+    }
+
+    suspend fun logout() {
+        userPreference.logout()
+    }
 
     init {
         if (dummyFood.isEmpty()) {
@@ -54,9 +70,11 @@ class DiaryRepository {
         @Volatile
         private var instance: DiaryRepository? = null
 
-        fun getInstance(): DiaryRepository =
+        fun getInstance(
+            userPreference: UserPreference,
+        ): DiaryRepository =
             instance ?: synchronized(this) {
-                DiaryRepository().apply {
+                DiaryRepository(userPreference).apply {
                     instance = this
                 }
             }

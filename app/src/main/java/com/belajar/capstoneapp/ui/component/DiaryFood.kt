@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -45,7 +46,8 @@ fun DiaryFood(
             FoodData.food.forEach { food ->
                 DiaryItem(
                     name = food.name,
-                    cal = food.id,
+                    cal = food.description,
+                    photoUrl = food.photoUrl,
                     category = food.category,
                     navigateToDetail = navigateToDetail,
                     modifier = Modifier
@@ -60,13 +62,14 @@ fun DiaryFood(
 fun DiaryItem(
     name: String,
     cal: String,
+    photoUrl: String,
     category : String,
     navigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(400.dp)
             .height(150.dp)
             .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(10.dp))
@@ -81,7 +84,7 @@ fun DiaryItem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
-                    model = "https://cardamomandcoconut.com/wp-content/uploads/2019/02/Instant-Pot-Banana-Oatmeal-10.jpg",
+                    model = photoUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -95,17 +98,17 @@ fun DiaryItem(
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp)
             ) {
                 Text(
-                    text = "Oatmeal with banana",
+                    text = name,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Green300
+                    color = Green300,
+                    modifier = Modifier.width(300.dp)
                 )
                 Text(
                     fontSize = 12.sp,
-                    text = "300 Kalori",
+                    text = cal + " kalori",
                     color = Dark100
                 )
-                Category(category)
             }
         }
     }

@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -68,7 +69,7 @@ fun DetailScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = viewModel(
-        factory = ViewModelFactory(Injection.provideRepository())
+        factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     )
 ) {
 
@@ -136,18 +137,18 @@ fun DetailInformation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "300 Kalori",
+                    text = description + " Kalori",
                     modifier = Modifier
                         .padding(start= 20.dp)
                 )
-                Category(category = "Sarapan")
+//                Category(category = "Sarapan")
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = description,
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp)
-            )
+//            Text(
+//                text = description,
+//                modifier = Modifier
+//                    .padding(start = 20.dp, end = 20.dp)
+//            )
             Spacer(modifier = Modifier.height(24.dp))
             SectionText(stringResource(R.string.section_gizi))
             KandunganGizi("Protein")
@@ -180,6 +181,25 @@ fun DetailInformation(
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "back",
+            )
+        }
+        IconButton(
+            onClick = {
+                isClicked = !isClicked
+                onFavoriteButtonClicked(id)
+                Log.d("cek data fav: ", isClicked.toString())
+            },
+            modifier = Modifier
+                .padding(end = 16.dp, top = 16.dp)
+                .align(Alignment.TopEnd)
+                .clip(CircleShape)
+                .size(40.dp)
+                .background(Color.White)
+                .testTag("favButton")
+        ) {
+            Icon(
+                imageVector = if (isClicked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = "favorite_button",
             )
         }
     }

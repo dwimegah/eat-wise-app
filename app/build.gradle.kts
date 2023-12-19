@@ -15,6 +15,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", "\"https://eatwise-ingredients-detection-api-j4c7qkx47q-et.a.run.app/ingredients/\"")
+        buildConfigField("String", "BASE_URL_USER", "\"https://eatwise-md-api-j4c7qkx47q-et.a.run.app/\"")
+        buildConfigField("String", "BASE_URL_CALCULATE", "\"https://eatwise-calculate-serat-api-j4c7qkx47q-et.a.run.app/\"")
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -38,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -63,6 +67,15 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.benchmark:benchmark-common:1.2.1")
+    implementation("androidx.compose.ui:ui-text-android:1.5.4")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.5")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.0")
+    implementation("androidx.datastore:datastore-core:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

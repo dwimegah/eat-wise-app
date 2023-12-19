@@ -40,7 +40,9 @@ import com.belajar.capstoneapp.ui.component.DiaryFood
 import com.belajar.capstoneapp.ui.component.SectionText
 import com.belajar.capstoneapp.ui.theme.Dark100
 import com.belajar.capstoneapp.ui.theme.Green100
+import com.belajar.capstoneapp.ui.theme.Green200
 import com.belajar.capstoneapp.ui.theme.Green300
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -143,18 +145,20 @@ fun Tanggal(
 ) {
     Box(
         modifier = Modifier
-            .padding(top = 10.dp)
+            .padding(top = 10.dp, start = 15.dp)
     ) {
         Row (
-            verticalAlignment = Alignment.CenterVertically
         ) {
-            itemTanggal("Sen", "01")
-            itemTanggal("Sel", "02")
-            itemTanggal("Rab", "03")
-            itemTanggal("Kam", "04")
-            itemTanggal("Jum", "05")
-            itemTanggal("Sab", "06")
-            itemTanggal("Min", "07")
+            val c = Calendar.getInstance()
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            itemTanggal("Tgl", (day.toString().toInt() - 6).toString())
+            itemTanggal("Tgl", (day.toString().toInt() - 5).toString())
+            itemTanggal("Tgl", (day.toString().toInt() - 4).toString())
+            itemTanggal("Tgl", (day.toString().toInt() - 3).toString())
+            itemTanggal("Tgl", (day.toString().toInt() - 2).toString())
+            itemTanggal("Tgl", (day.toString().toInt() - 1).toString())
+            itemTanggal("Tgl", day.toString())
         }
     }
 }
@@ -164,26 +168,50 @@ fun itemTanggal(
     hari: String,
     tanggal: String
 ) {
-    Card(
-        modifier = Modifier
-            .padding(start = 10.dp, bottom = 10.dp),
-    ) {
-        Column(
+        Card(
             modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .padding(start = 10.dp, end = 10.dp)
+                .padding(start = 10.dp, bottom = 10.dp),
         ) {
-            Text(
-                fontSize = 12.sp,
-                text = hari,
-                color = Green300
-            )
-            Text(
-                text = tanggal,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Green300
-            )
+            val c = Calendar.getInstance()
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            if (day.toString() == tanggal) {
+                Column(
+                    modifier = Modifier
+                        .background(color = Green200)
+                        .clip(RoundedCornerShape(10.dp))
+                        .padding(start = 10.dp, end = 10.dp),
+                ) {
+                    Text(
+                        fontSize = 12.sp,
+                        text = "Tgl",
+                        color = Green300
+                    )
+                    Text(
+                        text = tanggal,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Green300
+                    )
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .padding(start = 10.dp, end = 10.dp),
+                ) {
+                    Text(
+                        fontSize = 12.sp,
+                        text = "Tgl",
+                        color = Green300
+                    )
+                    Text(
+                        text = tanggal,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Green300
+                    )
+                }
+            }
         }
-    }
 }

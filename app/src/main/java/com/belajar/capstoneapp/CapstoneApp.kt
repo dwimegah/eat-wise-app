@@ -2,18 +2,24 @@ package com.belajar.capstoneapp
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -25,10 +31,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.belajar.capstoneapp.navigation.NavigationItem
 import com.belajar.capstoneapp.navigation.Screen
+import com.belajar.capstoneapp.ui.screen.camera.CameraScreen
 import com.belajar.capstoneapp.ui.screen.detail.DetailScreen
 import com.belajar.capstoneapp.ui.screen.diary.DiaryScreen
+import com.belajar.capstoneapp.ui.screen.home.HomeScreen
+import com.belajar.capstoneapp.ui.screen.list.ListScreen
+import com.belajar.capstoneapp.ui.screen.list.SearchScreen
+import com.belajar.capstoneapp.ui.screen.login.LoginScreen
 import com.belajar.capstoneapp.ui.theme.CapstoneAppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CapstoneApp (
     modifier: Modifier = Modifier,
@@ -38,8 +50,27 @@ fun CapstoneApp (
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
+        topBar = {
+            if (currentRoute == Screen.SearchScreen.route){
+                TopAppBar(
+//                    colors = TopAppBarColors,
+                    title = {
+                        Text(
+                            "Eat Wise",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigate("home") }) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                        }
+                    }
+                )
+            }
+        },
         bottomBar = {
-            if (currentRoute != Screen.DetailScreen.route) {
+            if (currentRoute != Screen.DetailScreen.route && currentRoute != Screen.Login.route && currentRoute != Screen.ListScreen.route) {
                 BottomBar(navController)
             }
         },
@@ -47,9 +78,32 @@ fun CapstoneApp (
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Diary.route,
+            startDestination = Screen.Login.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    navController = navController
+                )
+            }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    navController = navController,
+                    navigateToDetail = { foodId ->
+                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
+                    }
+                )
+            }
+            composable(Screen.Camera.route) {
+                CameraScreen(
+                    navigateToList = { ituri ->
+                        navController.currentBackStackEntry?.savedStateHandle?.apply {
+                            set("uriArg", ituri)
+                        }
+                        navController.navigate(Screen.ListScreen.route)
+                    }
+                )
+            }
             composable(Screen.Diary.route) {
                 DiaryScreen(
                     navigateToDetail = { foodId ->
@@ -71,27 +125,67 @@ fun CapstoneApp (
                     }
                 )
             }
+            composable(
+                route = Screen.ListScreen.route
+            ) {
+                ListScreen(
+                    navController = navController,
+                    navigateToDetail = { foodId ->
+                        navController.popBackStack()
+                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
+                    },
+                    navigateBack = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Home.route)
+                    }
+                )
+            }
+            composable(
+                route = Screen.SearchScreen.route
+            ) {
+                SearchScreen(
+                    navController = navController,
+                    navigateToDetail = { foodId ->
+                        navController.popBackStack()
+                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
+                    },
+                    navigateBack = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Home.route)
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun BottomBar(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navController: NavHostController
 ) {
-    NavigationBar(
-        modifier = modifier,
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    NavigationBar {
         val navigationItems = listOf(
             NavigationItem(
-                title = stringResource(R.string.menu_diary),
-                desc = stringResource(R.string.desc_diary),
+                title = "Home",
+                desc = "Home Screen",
                 icon = Icons.Default.Home,
-                screen = Screen.Diary
+                screen = Screen.Home
             ),
+            NavigationItem(
+                title = "Camera",
+                desc = "Camera Screen",
+                icon = Icons.Default.AddCircle,
+                screen = Screen.Camera
+            ),
+            NavigationItem(
+                title = "Diary",
+                desc = "Diary Screen",
+                icon = Icons.Default.Favorite,
+                screen = Screen.Diary
+            )
         )
         navigationItems.map { item ->
             NavigationBarItem(
