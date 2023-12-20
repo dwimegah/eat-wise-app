@@ -18,6 +18,7 @@ android {
         buildConfigField("String", "BASE_URL", "\"https://eatwise-ingredients-detection-api-j4c7qkx47q-et.a.run.app/ingredients/\"")
         buildConfigField("String", "BASE_URL_USER", "\"https://eatwise-md-api-j4c7qkx47q-et.a.run.app/\"")
         buildConfigField("String", "BASE_URL_CALCULATE", "\"https://eatwise-calculate-serat-api-j4c7qkx47q-et.a.run.app/\"")
+        buildConfigField("String", "BASE_URL_DETAIL", "\"https://eatwise-recipe-recommendation-api-j4c7qkx47q-et.a.run.app/\"")
         vectorDrawables {
             useSupportLibrary = true
         }

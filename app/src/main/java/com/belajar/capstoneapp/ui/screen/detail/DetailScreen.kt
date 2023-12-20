@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,6 +62,7 @@ import com.belajar.capstoneapp.ui.theme.Orange100
 import com.belajar.capstoneapp.ui.theme.Teal100
 import com.belajar.capstoneapp.ui.theme.White200
 import com.belajar.capstoneapp.viewmodel.DetailViewModel
+import com.belajar.capstoneapp.viewmodel.MainViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -68,50 +70,47 @@ fun DetailScreen(
     foodId: String,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = viewModel(
+    viewModel: MainViewModel = viewModel(
         factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     )
 ) {
-
-    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is UiState.Loading -> {
-                viewModel.getFoodById(foodId)
-            }
-            is UiState.Success -> {
-                val data = uiState.data
-                DetailInformation(
-                    id = data.id,
-                    name = data.name,
-                    image = data.photoUrl,
-                    description = data.description,
-                    category = data.category,
-                    isFavorite = data.isFavorite,
-                    navigateBack = navigateBack,
-                    onFavoriteButtonClicked = { id ->
-                        viewModel.updateFav(id)
-                    },
-
-                )
-            }
-            is UiState.Error -> {}
-        }
+    viewModel.getRecipeBySlug(foodId)
+    val it = viewModel.detail.observeAsState().value
+//    data?.forEach {
+    it?.let { it1 ->
+        DetailInformation(
+            slugs = it1.slugs,
+            title = it.title,
+            image = it.image_url,
+            preparation = it.preparation,
+            ingredients = it.ingredients,
+            category = it.category,
+            calories = it.calories,
+            carb = it.carb,
+            fat = it.fat,
+            protein = it.protein,
+            navigateBack = navigateBack
+        )
     }
+//    }
 }
 
 @Composable
 fun DetailInformation(
-    id: String,
-    name: String,
+    slugs: String,
+    title: String,
     image: String,
-    description: String,
+    preparation: String,
+    ingredients: String,
     category: String,
-    isFavorite: Boolean,
+    calories : String,
+    carb: String,
+    fat: String,
+    protein: String,
     navigateBack: () -> Unit,
-    onFavoriteButtonClicked: (id: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isClicked by remember { mutableStateOf(isFavorite)}
+    var isClicked by remember { mutableStateOf(false)}
 
     Box(
         modifier = Modifier
@@ -132,12 +131,12 @@ fun DetailInformation(
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(24.dp))
-            SectionText(stringResource(R.string.section_title))
+            SectionText(title)
             Row (
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = description + " Kalori",
+                    text = calories + " Kalori",
                     modifier = Modifier
                         .padding(start= 20.dp)
                 )
@@ -151,19 +150,18 @@ fun DetailInformation(
 //            )
             Spacer(modifier = Modifier.height(24.dp))
             SectionText(stringResource(R.string.section_gizi))
-            KandunganGizi("Protein")
+            KandunganGizi("Protein", carb, fat, protein)
             Spacer(modifier = Modifier.height(24.dp))
             SectionText(stringResource(R.string.section_bahan))
-            Bahan()
+            Text(
+                text = ingredients,
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp)
+            )
             Spacer(modifier = Modifier.height(24.dp))
             SectionText(stringResource(R.string.section_step))
             Text(
-                text = "1. Rebus satu cangkir air hingga mendidih dalam panci.\n" +
-                        "2. Tambahkan oatmeal ke dalam air mendidih dan masak dengan api sedang sambil sesekali diaduk selama 5-7 menit hingga oatmeal menjadi lembut dan kental. Jika Anda ingin oatmeal yang lebih kental, tambahkan susu.\n" +
-                        "3. Saat oatmeal hampir matang, tambahkan potongan pisang dan aduk rata. Biarkan pisang meleleh dan mencampur dengan oatmeal.\n" +
-                        "4. Sajikan oatmeal dengan pisang dalam mangkuk.\n" +
-                        "5. Pemanis sesuai selera dengan sedikit madu atau gula.\n" +
-                        "6. ikmati oatmeal dengan pisang hangat!",
+                text = preparation,
                 modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp)
             )
@@ -186,7 +184,6 @@ fun DetailInformation(
         IconButton(
             onClick = {
                 isClicked = !isClicked
-                onFavoriteButtonClicked(id)
                 Log.d("cek data fav: ", isClicked.toString())
             },
             modifier = Modifier
@@ -232,6 +229,9 @@ fun Category(
 @Composable
 fun KandunganGizi(
     gizi: String,
+    carb: String,
+    fat: String,
+    protein: String,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -242,9 +242,9 @@ fun KandunganGizi(
         Row (
             verticalAlignment = Alignment.CenterVertically
         ) {
-            itemGizi("Karbohidrat", "30g", Green200)
-            itemGizi("Protein", "8g", Orange100)
-            itemGizi("Lemak", "5g", Teal100)
+            itemGizi("Karbohidrat", carb + "g", Green200)
+            itemGizi("Protein", protein + "g", Orange100)
+            itemGizi("Lemak", fat + "g", Teal100)
         }
     }
 }
@@ -260,7 +260,6 @@ fun Bahan(
         Row (
             verticalAlignment = Alignment.CenterVertically
         ) {
-            itemBahan()
             itemBahan()
         }
     }

@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -99,26 +100,27 @@ fun HomeScreen (
     navigateToDetail: (String) -> Unit
 ) {
     val query by viewModel.query
+    HomeContent(
+        navController = navController,
+        query = query,
+        //            listGoal = data.data,
+        onQueryChange = viewModel::search,
+        navigateToDetail = navigateToDetail
+    )
 
 //    val dataSession = viewModel.ses.value
 
-    LaunchedEffect(viewModel.getSession()) {
-        viewModel.getSession().collect { newUser ->
+//    LaunchedEffect(true) {
+//        viewModel.getSession().collect { newUser ->
 //            viewModel.getGoal(newUser.token)
 //            val data = viewModel.goal.value
 //            Log.d("inidata goal", viewModel.getGoal(newUser.token).value.toString())
-            Log.d("cek data session", newUser.toString())
-        }
-    }
+//            Log.d("cek data session", newUser.toString())
+//        }
+//    }
 
 //    if (data !=  null) {
-        HomeContent(
-            navController = navController,
-            query = "",
-            //            listGoal = data.data,
-            onQueryChange = viewModel::search,
-            navigateToDetail = navigateToDetail
-        )
+
 //    }
 }
 
@@ -155,7 +157,7 @@ fun HomeContent(
         SectionText(stringResource(R.string.section_recommend))
         LazyRow(
             modifier = modifier
-                .clickable { navigateToDetail("1") }
+                .clickable { navigateToDetail("quick-&-healthy-banana-boats") }
         ) {
             items(1) { // Replace 10 with the actual number of items in your DiaryFood
                 // DiaryFood item content goes here
@@ -200,7 +202,7 @@ fun HomeContent(
                     modifier = Modifier
                         .size(80.dp)
                         .paint(
-                            painterResource(id = R.drawable.avatar_icon)
+                            painterResource(id = R.drawable.avatar_icon_girl)
                         )
                         .clip(CircleShape)
                 )
@@ -260,16 +262,24 @@ fun HomeContent(
                     placeholder = {
                         Text(stringResource(id = R.string.search_menu))
                     },
-                    modifier = modifier
-                        .onKeyEvent {
-                            if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
-                                navController.currentBackStackEntry?.savedStateHandle?.apply {
-                                    set("search_key", "banana")
-                                }
-                                navController.navigate("search")
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            navController.currentBackStackEntry?.savedStateHandle?.apply {
+                                set("searchKey", query)
                             }
-                            false
+                            navController.navigate("search")
                         }
+                    ),
+                    modifier = modifier
+//                        .onKeyEvent {
+//                            if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_TAB){
+//                                navController.currentBackStackEntry?.savedStateHandle?.apply {
+//                                    set("searchKey", query)
+//                                }
+//                                navController.navigate("search")
+//                            }
+//                            false
+//                        }
                         .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
                         .heightIn(min = 48.dp)
                         .shadow(56.dp)
@@ -353,7 +363,7 @@ fun HomeContent(
             Row (
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier.clickable {
-                    navigateToDetail("1")
+                    navigateToDetail("quick-&-healthy-banana-boats")
                 }
             ) {
                 Column (

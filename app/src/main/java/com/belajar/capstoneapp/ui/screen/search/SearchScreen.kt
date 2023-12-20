@@ -64,16 +64,6 @@ fun SearchScreen(
 ) {
     val capturedImageUri = navController.previousBackStackEntry?.savedStateHandle?.get<String>(
         "search_key").toString()
-//    val myFile = uriToFile(Uri.parse(capturedImageUri), LocalContext.current)
-//    val getFile = myFile
-//    val file = reduceFileImage(getFile as File)
-//    val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-//    val imageMultipart: MultipartBody.Part =
-//        MultipartBody.Part.createFormData("files", file.name, requestImageFile)
-//
-//    cameraViewModel.getRecipeByPhoto(imageMultipart)
-//    val data = cameraViewModel.recipe.observeAsState().value
-//    Log.d("inidata", data.toString())
     ListContentSearch(listRecipe = FoodData, navigateBack = navigateBack, navigateToDetail = navigateToDetail)
 }
 
@@ -95,13 +85,13 @@ fun ListContentSearch(
                 if (!listRecipe.food.isEmpty()) {
                     items(listRecipe.food, key = { it.id }) { f ->
                         RecipeListItemSearch(
-                            id = f.id,
+                            id = f.slugs,
                             title = f.name,
                             photoUrl = f.photoUrl,
                             navigateToDetail = navigateToDetail,
                             modifier = Modifier
                                 .animateItemPlacement(tween(durationMillis = 200))
-                                .clickable { navigateToDetail(f.id) }
+                                .clickable { navigateToDetail(f.slugs) }
                         )
                     }
                 } else {
@@ -135,7 +125,7 @@ fun RecipeListItemSearch(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier.clickable {
-                navigateToDetail("1")
+                navigateToDetail(id)
             }
         ) {
             AsyncImage(

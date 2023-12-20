@@ -1,6 +1,7 @@
 package com.belajar.capstoneapp.ui.screen.camera
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,26 +19,27 @@ class CameraViewModel : ViewModel() {
     val recipe: LiveData<RecipeResponse> = _recipe
 
     private val _isLoading = MutableLiveData<Boolean>()
+//    val loading : LiveData<Boolean> = _isLoading
+    var loading = mutableStateOf(true)
 
     fun getRecipeByPhoto(photo: MultipartBody.Part) {
-        _isLoading.value = true
+//        _isLoading.value = true
         val client = ApiConfig.getApiService().getRecipeByPhoto(photo)
         Log.d(TAG, "getRecipeByPhoto: $client")
         client.enqueue(object : Callback<RecipeResponse> {
             override fun onResponse(call: Call<RecipeResponse>, response: Response<RecipeResponse>) {
                 if (response.isSuccessful) {
-                    _isLoading.value = false
                     _recipe.value = response.body()
                     Log.d(TAG, "onResponse: ${_recipe.value}")
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    _isLoading.value = false
+                    loading.value = false
                     Log.e(TAG, "onResponse: $errorBody")
                 }
             }
 
             override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {
-                _isLoading.value = false
+                loading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
             }
 

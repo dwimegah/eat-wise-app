@@ -37,13 +37,13 @@ import com.belajar.capstoneapp.R
 @Composable
 fun ProfileScreen(navController: NavHostController
 ) {
-    val image = painterResource(id = R.drawable.avatar_icon)
-    val username = "dul kopling"
-    val age = "21"
-    val height = "169"
-    val gender = "male"
+    val image = painterResource(id = R.drawable.avatar_icon_girl)
+    val username = "Eve"
+    val age = "20"
+    val height = "157"
+    val gender = "Female"
     val activity_level = "medium"
-    val weight = "70"
+    val weight = "45"
 
     Box(
         modifier = Modifier

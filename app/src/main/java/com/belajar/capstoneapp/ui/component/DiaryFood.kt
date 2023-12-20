@@ -45,13 +45,14 @@ fun DiaryFood(
         ) {
             FoodData.food.forEach { food ->
                 DiaryItem(
+                    slugs = food.slugs,
                     name = food.name,
                     cal = food.description,
                     photoUrl = food.photoUrl,
                     category = food.category,
                     navigateToDetail = navigateToDetail,
                     modifier = Modifier
-                    .clickable { navigateToDetail("1") }
+                    .clickable { navigateToDetail(food.slugs) }
                 )
             }
         }
@@ -60,6 +61,7 @@ fun DiaryFood(
 
 @Composable
 fun DiaryItem(
+    slugs: String,
     name: String,
     cal: String,
     photoUrl: String,
@@ -77,7 +79,7 @@ fun DiaryItem(
         Row (
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier.clickable {
-                navigateToDetail("1")
+                navigateToDetail(slugs)
             }
         ) {
             Column(

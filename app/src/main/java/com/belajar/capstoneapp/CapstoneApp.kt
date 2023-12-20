@@ -130,7 +130,7 @@ fun CapstoneApp (
                     navArgument("id") { type = NavType.StringType }
                 )
             ) {
-                val id = it.arguments?.getString("id") ?: "1"
+                val id = it.arguments?.getString("id") ?: "quick-&-healthy-banana-boats"
                 DetailScreen(
                     foodId = id,
                     navigateBack = {

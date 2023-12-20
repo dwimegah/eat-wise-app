@@ -6,12 +6,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,8 +43,10 @@ import com.belajar.capstoneapp.ui.screen.camera.CameraViewModel
 import com.belajar.capstoneapp.utils.uriToFile
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.livedata.observeAsState
@@ -50,6 +55,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.belajar.capstoneapp.R
 import com.belajar.capstoneapp.ui.component.SectionText
+import com.belajar.capstoneapp.ui.theme.Green100
+import com.belajar.capstoneapp.ui.theme.Green200
+import com.belajar.capstoneapp.ui.theme.Green300
 import com.belajar.capstoneapp.utils.reduceFileImage
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -76,8 +84,40 @@ fun ListScreen(
 
     cameraViewModel.getRecipeByPhoto(imageMultipart)
     val data = cameraViewModel.recipe.observeAsState().value
-    Log.d("inidata", data.toString())
-    ListContent(listRecipe = data?.recommendations, navigateBack = navigateBack, navigateToDetail = navigateToDetail)
+    var loading = true
+    val load = cameraViewModel.loading.value
+
+    if (data != null) {
+        loading = false
+        Log.d("inidata", data.toString())
+        ListContent(
+            listRecipe = data?.recommendations,
+            navigateBack = navigateBack,
+            navigateToDetail = navigateToDetail
+        )
+    }
+
+    if (load != true) {
+        loading = false
+        EmptyContent(
+            navigateBack = navigateBack,
+            navigateToDetail = navigateToDetail
+        )
+    }
+
+    if (loading == true) {
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .padding(), horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator(
+                modifier = Modifier.width(64.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+        }
+    } else {
+        return
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -96,15 +136,16 @@ fun ListContent(
         ) {
             if (listRecipe != null) {
                 if (listRecipe.isNotEmpty()) {
-                    items(listRecipe, key = { it.id }) { f ->
+                    items(listRecipe, key = { it.title }) { f ->
                         RecipeListItem(
-                            id = f.id,
+                            slugs = f.slugs,
                             title = f.title,
-//                            photoUrl = f.photoUrl,
+                            img = f.img,
+                            category = f.category,
                             navigateToDetail = navigateToDetail,
                             modifier = Modifier
                                 .animateItemPlacement(tween(durationMillis = 200))
-                                .clickable { navigateToDetail(f.id) }
+                                .clickable { navigateToDetail(f.slugs) }
                         )
                     }
                 } else {
@@ -136,10 +177,54 @@ fun ListContent(
 }
 
 @Composable
+fun EmptyContent(
+    navigateBack: () -> Unit,
+    navigateToDetail: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(top = 32.dp)
+                .testTag("foodList")
+        ) {
+//            {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Text(
+                            text = "Resep tidak ditemukan",
+                            modifier = Modifier.testTag("emptyText")
+                        )
+                    }
+                }
+//            }
+        IconButton(
+            onClick = navigateBack,
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp)
+                .align(Alignment.TopStart)
+                .clip(CircleShape)
+                .size(40.dp)
+                .testTag("backHome")
+                .background(Color.White)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+            )
+        }
+    }
+}
+
+@Composable
 fun RecipeListItem(
-    id: String,
+    slugs: String,
     title: String,
-//    photoUrl: String,
+    img: String,
+    category: String,
     navigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -153,11 +238,11 @@ fun RecipeListItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier.clickable {
-                navigateToDetail("1")
+                navigateToDetail(slugs)
             }
         ) {
             AsyncImage(
-                model = "https://www.heartandstroke.ca/-/media/images/articles/foodguideplatev2.jpg?rev=372b23652cd243f98bef2cca920a6fd4&la=en&bc=f7f7f7&as=1&h=653&w=1160&hash=FC17BCEE028EF4BD0EC2A22F170C26A7",
+                model = img,
                 contentDescription = "food photo",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -173,7 +258,33 @@ fun RecipeListItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 )
+                Category(
+                    category = category
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun Category(
+    category: String
+) {
+    Card(
+        modifier = Modifier
+            .padding(top = 5.dp, bottom = 10.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(Green200)
+                .padding(start = 10.dp, end = 10.dp)
+        ) {
+            Text(
+                fontSize = 14.sp,
+                text = category,
+                color = Green100
+            )
         }
     }
 }

@@ -118,7 +118,9 @@ fun LoginScreen(navController: NavHostController) {
 
             ClickableText(
                 text = AnnotatedString("Sign Up"),
-                onClick = {navController.navigate("register") },
+                onClick = {
+//                    navController.navigate("register")
+                          },
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontFamily = FontFamily.Default,
@@ -148,10 +150,11 @@ fun loginAuth(
         factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     ),
 ) {
+//    navController.navigate("home")
 //    viewModel.login(username, password)
     val paramObject = JsonObject()
-    paramObject.addProperty("email", username)
-    paramObject.addProperty("password", password)
+    paramObject.addProperty("email", "admin1@gmail.com")
+    paramObject.addProperty("password", "12345")
 
     val client = ApiConfigUser.getApiServiceUser().login(paramObject)
 //    val countDownLatch = CountDownLatch(1)
@@ -167,7 +170,7 @@ fun loginAuth(
                     viewModel.saveSession(
                         UserModel(
                             it.user.user,
-                            "Bearer " + it.user.token,
+                            "jwt=" + it.user.token,
                             true
                         )
 //                        it.user

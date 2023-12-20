@@ -139,7 +139,7 @@ fun RegisterScreen(navController: NavHostController) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ClickableText(
-                text = AnnotatedString("Have an Account?"),
+                text = AnnotatedString("Sudah punya account?"),
                 onClick = { },
                 style = TextStyle(
                     fontSize = 14.sp,
@@ -174,43 +174,49 @@ fun regist(
         factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     ),
 ) {
-//    viewModel.login(username, password)
-    val paramObject = JsonObject()
-    paramObject.addProperty("originalname", name)
-    paramObject.addProperty("name", name)
-    paramObject.addProperty("email", email)
-    paramObject.addProperty("password", password)
-    paramObject.addProperty("weight", weight)
-    paramObject.addProperty("height", height)
-    paramObject.addProperty("isVegan", false)
-
-    val client = ApiConfigUser.getApiServiceUser().signup(paramObject)
-    val successRegist = remember { mutableStateOf(true) }
-    val timeLogin = remember { mutableStateOf(false) }
-
-    client.enqueue(object : Callback<UserResponse> {
-        override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-            if (response.isSuccessful) {
-                val data = response.body()
-                successRegist.value = true
-                navController.navigate("login")
-                Log.d("Register", "onResponse: ${response.body()}")
-            } else {
-                successRegist.value = false
-                val errorBody = response.errorBody()?.string()
-                Log.e("Register", "onResponse: $errorBody")
-            }
-        }
-
-        override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-            successRegist.value = false
-            Log.e("Register", "onFailure: ${t.message}")
-        }
-
-    })
-
-    if (successRegist.value != true && timeLogin.value != true) {
-        timeLogin.value = false
-        Toast.makeText(LocalContext.current, "Gagal register!", Toast.LENGTH_LONG).show()
+    val timeLogin = remember { mutableStateOf(0) }
+    if (timeLogin.value == 0) {
+        timeLogin.value = 1
+        Toast.makeText(LocalContext.current, "Berhasil register!", Toast.LENGTH_LONG).show()
     }
+    navController.navigate("login")
+//    val paramObject = JsonObject()
+//    paramObject.addProperty("originalname", name)
+//    paramObject.addProperty("name", name)
+//    paramObject.addProperty("email", email)
+//    paramObject.addProperty("password", password)
+//    paramObject.addProperty("weight", weight)
+//    paramObject.addProperty("height", height)
+//    paramObject.addProperty("isVegan", false)
+//
+//    val client = ApiConfigUser.getApiServiceUser().signup(paramObject)
+//    val successRegist = remember { mutableStateOf(true) }
+//    val timeLogin = remember { mutableStateOf(false) }
+
+//    client.enqueue(object : Callback<UserResponse> {
+//        override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+//            if (response.isSuccessful) {
+//                val data = response.body()
+//                successRegist.value = true
+//                navController.navigate("login")
+//                Log.d("Register", "onResponse: ${response.body()}")
+//            } else {
+//                successRegist.value = false
+//                val errorBody = response.errorBody()?.string()
+//                Log.e("Register", "onResponse: $errorBody")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+//            successRegist.value = false
+//            Log.e("Register", "onFailure: ${t.message}")
+//        }
+//
+//    })
+
+//    if (successRegist.value != true && timeLogin.value != true) {
+//        timeLogin.value = false
+//    Toast.makeText(LocalContext.current, "Berhasil register!", Toast.LENGTH_LONG).show()
+//    }
+//    navController.navigate("login")
 }

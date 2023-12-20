@@ -6,24 +6,27 @@ object FoodData {
     val food = listOf(
         Food(
             "1",
-            "Peach and Blackberry Overnight Oatmeal with Chia Seeds",
-            "https://www.asaucykitchen.com/wp-content/uploads/2016/08/Overnight-Oats-5-1-480x480.jpg",
-            "390",
-            "Food"
+            "quick-&-healthy-banana-boats",
+            "Quick & Healthy Banana Boats",
+            "https://simple-veganista.com/wp-content/uploads/2016/06/quick-healthy-banana-boats-4.jpg",
+            "350",
+            "Dinner"
         ),
         Food(
             "2",
+            "perfect-potato-salad",
             "Perfect Potato Salad",
-            "https://www.cookingclassy.com/wp-content/uploads/2018/06/potato-salad-15.jpg",
-            "358",
-            "Food"
+            "https://veganuary.com/wp-content/uploads/2017/10/Potato-Salad-Edited.jpg",
+            "350",
+            "Lunch"
         ),
         Food(
             "3",
-            "Oatmeal (Porridge) with Bananas and Seeds",
-            "https://cardamomandcoconut.com/wp-content/uploads/2019/02/Instant-Pot-Banana-Oatmeal-10.jpg",
-            "385",
-            "Food"
+            "naked-sushi-bowl",
+            "Naked Sushi Bowl",
+            "https://veganuary.com/wp-content/uploads/2016/10/VGANG-COOKBOOK-7882-small.jpg",
+            "378",
+            "Dinner"
         )
     )
 }
