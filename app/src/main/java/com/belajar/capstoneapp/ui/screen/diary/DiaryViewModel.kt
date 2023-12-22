@@ -24,4 +24,14 @@ class DiaryViewModel (private val repository: DiaryRepository) : ViewModel() {
                 _uiState.value = UiState.Success(it)
             }
     }
+
+    fun search(newQuery: String) = viewModelScope.launch {
+        repository.searchFood(newQuery)
+            .catch {
+                _uiState.value = UiState.Error(it.message.toString())
+            }
+            .collect {
+                _uiState.value = UiState.Success(it)
+            }
+    }
 }

@@ -43,10 +43,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import com.belajar.capstoneap.model.Food
 import com.belajar.capstoneapp.model.FoodData
+import com.belajar.capstoneapp.ui.common.UiState
+import com.belajar.capstoneapp.ui.screen.diary.DiaryViewModel
 import com.belajar.capstoneapp.utils.reduceFileImage
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -58,19 +62,31 @@ fun SearchScreen(
     navController: NavController,
     navigateBack: () -> Unit,
     navigateToDetail: (String) -> Unit,
-    cameraViewModel: CameraViewModel = viewModel(
+    viewModel: DiaryViewModel = viewModel(
         factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     )
 ) {
-    val capturedImageUri = navController.previousBackStackEntry?.savedStateHandle?.get<String>(
-        "search_key").toString()
-    ListContentSearch(listRecipe = FoodData, navigateBack = navigateBack, navigateToDetail = navigateToDetail)
+    val searchKey = navController.previousBackStackEntry?.savedStateHandle?.get<String>(
+        "searchKey").toString()
+//    val query by viewModel.query
+    Log.d("searchkey:", searchKey)
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+                viewModel.search(searchKey)
+            }
+            is UiState.Success -> {
+                ListContentSearch(listRecipe = uiState.data, navigateBack = navigateBack, navigateToDetail = navigateToDetail)
+            }
+            is UiState.Error -> {}
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListContentSearch(
-    listRecipe: FoodData?,
+    listRecipe: List<Food>,
     navigateBack: () -> Unit,
     navigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -82,8 +98,8 @@ fun ListContentSearch(
             modifier = Modifier.testTag("foodList")
         ) {
             if (listRecipe != null) {
-                if (!listRecipe.food.isEmpty()) {
-                    items(listRecipe.food, key = { it.id }) { f ->
+                if (listRecipe.isNotEmpty()) {
+                    items(listRecipe, key = { it.id }) { f ->
                         RecipeListItemSearch(
                             id = f.slugs,
                             title = f.name,
