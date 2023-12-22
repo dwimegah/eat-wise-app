@@ -51,6 +51,7 @@ fun DiaryFood(
                     photoUrl = food.photoUrl,
                     category = food.category,
                     navigateToDetail = navigateToDetail,
+                    isFav = false,
                     modifier = Modifier
                     .clickable { navigateToDetail(food.slugs) }
                 )
@@ -66,6 +67,7 @@ fun DiaryItem(
     cal: String,
     photoUrl: String,
     category : String,
+    isFav : Boolean,
     navigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier
 ){

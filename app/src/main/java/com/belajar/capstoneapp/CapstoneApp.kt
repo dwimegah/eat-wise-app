@@ -34,6 +34,7 @@ import com.belajar.capstoneapp.navigation.NavigationItem
 import com.belajar.capstoneapp.navigation.Screen
 import com.belajar.capstoneapp.ui.screen.camera.CameraScreen
 import com.belajar.capstoneapp.ui.screen.detail.DetailScreen
+import com.belajar.capstoneapp.ui.screen.detail.DetailScreenDiary
 import com.belajar.capstoneapp.ui.screen.diary.DiaryScreen
 import com.belajar.capstoneapp.ui.screen.home.HomeScreen
 import com.belajar.capstoneapp.ui.screen.list.ListScreen
@@ -103,7 +104,7 @@ fun CapstoneApp (
                 HomeScreen(
                     navController = navController,
                     navigateToDetail = { foodId ->
-                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
+                        navController.navigate(Screen.DetailScreenDiary.createRoute(foodId))
                     }
                 )
             }
@@ -120,8 +121,8 @@ fun CapstoneApp (
             composable(Screen.Diary.route) {
                 DiaryScreen(
                     navigateToDetail = { foodId ->
-                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
-                    }
+                        navController.navigate(Screen.DetailScreenDiary.createRoute(foodId))
+                    },
                 )
             }
             composable(
@@ -132,6 +133,20 @@ fun CapstoneApp (
             ) {
                 val id = it.arguments?.getString("id") ?: "quick-&-healthy-banana-boats"
                 DetailScreen(
+                    foodId = id,
+                    navigateBack = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+            composable(
+                route = Screen.DetailScreenDiary.route,
+                arguments = listOf(
+                    navArgument("id") { type = NavType.StringType }
+                )
+            ) {
+                val id = it.arguments?.getString("id") ?: "quick-&-healthy-banana-boats"
+                DetailScreenDiary(
                     foodId = id,
                     navigateBack = {
                         navController.navigateUp()
@@ -160,7 +175,7 @@ fun CapstoneApp (
                     navController = navController,
                     navigateToDetail = { foodId ->
                         navController.popBackStack()
-                        navController.navigate(Screen.DetailScreen.createRoute(foodId))
+                        navController.navigate(Screen.DetailScreenDiary.createRoute(foodId))
                     },
                     navigateBack = {
                         navController.popBackStack()

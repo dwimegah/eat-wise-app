@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.belajar.capstoneapp.data.DiaryRepository
 import com.belajar.capstoneapp.di.Injection
 import com.belajar.capstoneapp.ui.screen.camera.CameraViewModel
+import com.belajar.capstoneapp.ui.screen.diary.DiaryViewModel
 import com.belajar.capstoneapp.ui.screen.login.LoginViewModel
 import com.belajar.capstoneapp.viewmodel.DetailViewModel
 import com.belajar.capstoneapp.viewmodel.HomeViewModel
@@ -17,7 +18,7 @@ class ViewModelFactory(private val repository: DiaryRepository) :
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel() as T
+            return MainViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
@@ -26,6 +27,8 @@ class ViewModelFactory(private val repository: DiaryRepository) :
             return CameraViewModel() as T
         } else if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(repository) as T
+        } else if (modelClass.isAssignableFrom(DiaryViewModel::class.java)) {
+            return DiaryViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

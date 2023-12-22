@@ -100,36 +100,36 @@ fun LoginScreen(navController: NavHostController) {
             Text(text = "Login")
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            ClickableText(
-                text = AnnotatedString("Belum punya akun?"),
-                onClick = { },
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily.Default
-                )
-            )
-
-            ClickableText(
-                text = AnnotatedString("Sign Up"),
-                onClick = {
-//                    navController.navigate("register")
-                          },
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily.Default,
-                    textDecoration = TextDecoration.Underline,
-                    color = Green300
-                ),
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
+//        Spacer(modifier = Modifier.height(20.dp))
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 8.dp),
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            ClickableText(
+//                text = AnnotatedString("Belum punya akun?"),
+//                onClick = { },
+//                style = TextStyle(
+//                    fontSize = 14.sp,
+//                    fontFamily = FontFamily.Default
+//                )
+//            )
+//
+//            ClickableText(
+//                text = AnnotatedString("Sign Up"),
+//                onClick = {
+////                    navController.navigate("register")
+//                          },
+//                style = TextStyle(
+//                    fontSize = 14.sp,
+//                    fontFamily = FontFamily.Default,
+//                    textDecoration = TextDecoration.Underline,
+//                    color = Green300
+//                ),
+//                modifier = Modifier.padding(start = 16.dp)
+//            )
+//        }
 
         if (isLogin.value == true) {
             loginAuth(

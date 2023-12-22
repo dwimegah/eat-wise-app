@@ -52,6 +52,7 @@ import coil.compose.AsyncImage
 import com.belajar.capstoneapp.R
 import com.belajar.capstoneapp.ViewModelFactory
 import com.belajar.capstoneapp.di.Injection
+import com.belajar.capstoneapp.model.FoodData
 import com.belajar.capstoneapp.ui.common.UiState
 import com.belajar.capstoneapp.ui.component.SectionText
 import com.belajar.capstoneapp.ui.theme.Dark100
@@ -66,7 +67,7 @@ import com.belajar.capstoneapp.viewmodel.MainViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(
+fun DetailScreenDiary(
     foodId: String,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -75,28 +76,38 @@ fun DetailScreen(
     )
 ) {
     viewModel.getRecipeBySlug(foodId)
-    val it = viewModel.detail.observeAsState().value
+//    val it = viewModel.detail.observeAsState().value
 //    data?.forEach {
-    it?.let { it1 ->
-        DetailInformation(
-            slugs = it1.slugs,
-            title = it.title,
-            image = it.image_url,
-            preparation = it.preparation,
-            ingredients = it.ingredients,
-            category = it.category,
-            calories = it.calories,
-            carb = it.carb,
-            fat = it.fat,
-            protein = it.protein,
-            navigateBack = navigateBack
-        )
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+                viewModel.getFoodById(foodId)
+            }
+
+            is UiState.Success -> {
+                val it = uiState.data
+                DetailInformation2(
+                    slugs = it.slugs,
+                    title = it.name,
+                    image = it.photoUrl,
+                    preparation = it.preparation,
+                    ingredients = it.ingredients,
+                    category = it.category,
+                    calories = it.description,
+                    carb = it.carb,
+                    fat = it.fat,
+                    protein = it.protein,
+                    isFav = it.isFavorite,
+                    navigateBack = navigateBack
+                )
+            }
+            is UiState.Error -> {}
+        }
     }
 //    }
 }
-
 @Composable
-fun DetailInformation(
+fun DetailInformation2(
     slugs: String,
     title: String,
     image: String,
@@ -107,13 +118,14 @@ fun DetailInformation(
     carb: String,
     fat: String,
     protein: String,
+    isFav: Boolean,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = viewModel(
         factory = ViewModelFactory(Injection.provideRepository(LocalContext.current))
     )
 ) {
-    var isClicked by remember { mutableStateOf(false)}
+    var isClicked by remember { mutableStateOf(isFav)}
 
     Box(
         modifier = Modifier
@@ -201,136 +213,6 @@ fun DetailInformation(
             Icon(
                 imageVector = if (isClicked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = "favorite_button",
-            )
-        }
-    }
-}
-
-@Composable
-fun Category(
-    category: String
-) {
-    Card(
-        modifier = Modifier
-            .padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(Green100)
-                .padding(start = 10.dp, end = 10.dp)
-        ) {
-            Text(
-                fontSize = 16.sp,
-                text = category,
-                color = Green300,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun KandunganGizi(
-    gizi: String,
-    carb: String,
-    fat: String,
-    protein: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = Modifier
-            .height(75.dp)
-            .padding(top = 10.dp, start = 10.dp)
-    ) {
-        Row (
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            itemGizi("Karbohidrat", carb + "g", Green200)
-            itemGizi("Protein", protein + "g", Orange100)
-            itemGizi("Lemak", fat + "g", Teal100)
-        }
-    }
-}
-
-@Composable
-fun Bahan(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = Modifier
-            .padding(top = 10.dp)
-    ) {
-        Row (
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            itemBahan()
-        }
-    }
-}
-
-@Composable
-fun itemBahan() {
-    Card(
-        modifier = Modifier
-            .padding(start = 20.dp)
-            .clip(RoundedCornerShape(10.dp)),
-        colors = CardDefaults.cardColors(containerColor = Green100)
-    ) {
-        Column(
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-        ) {
-            AsyncImage(
-                model = "https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/03/oats-oatmeal-1296x728-header.jpg?w=1155&h=1528",
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(start = 10.dp, top = 10.dp)
-                    .size(40.dp)
-                    .clip(CircleShape)
-            )
-            Text(
-                text = "Oatmeal",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Green300
-            )
-            Text(
-                fontSize = 12.sp,
-                text = "1 Cangkir",
-                color = Dark100
-            )
-        }
-    }
-}
-
-@Composable
-fun itemGizi(
-    gizi: String,
-    berat: String,
-    colorbck: Color
-) {
-    Card(
-        modifier = Modifier
-            .padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(colorbck)
-                .height(100.dp)
-                .padding(start = 10.dp, end = 10.dp)
-        ) {
-            Text(
-                fontSize = 12.sp,
-                text = gizi,
-                color = White200
-            )
-            Text(
-                text = berat,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = White200
             )
         }
     }

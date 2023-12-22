@@ -148,10 +148,10 @@ fun HomeContent(
         // Preview with sample data
         PieChart(
             data = mapOf(
-                Pair("Carb", 150),
-                Pair("Protein", 120),
-                Pair("Less", 100),
-                Pair("Fat", 110)
+                Pair("Carb", 30),
+                Pair("Protein", 10),
+                Pair("Fat", 10),
+                Pair("Less", 50),
             )
         )
         SectionText(stringResource(R.string.section_recommend))
@@ -219,7 +219,7 @@ fun HomeContent(
                         color = Color.White
                     )
                     Text(
-                        text = "Eve",
+                        text = "Dwi",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

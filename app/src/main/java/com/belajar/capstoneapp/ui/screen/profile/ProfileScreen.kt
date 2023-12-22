@@ -38,7 +38,7 @@ import com.belajar.capstoneapp.R
 fun ProfileScreen(navController: NavHostController
 ) {
     val image = painterResource(id = R.drawable.avatar_icon_girl)
-    val username = "Eve"
+    val username = "Dwi"
     val age = "20"
     val height = "157"
     val gender = "Female"

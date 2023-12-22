@@ -46,7 +46,7 @@ class DiaryRepository private constructor(
 
     fun getFoodById(foodId: String): Food {
         return dummyFood.first {
-            it.id == foodId
+            it.slugs == foodId
         }
     }
 
@@ -55,7 +55,7 @@ class DiaryRepository private constructor(
     }
 
     fun updateFav(foodId: String): Flow<Boolean> {
-        val index = dummyFood.indexOfFirst { it.id == foodId }
+        val index = dummyFood.indexOfFirst { it.slugs == foodId }
         val result = if (index >= 0) {
             val food = dummyFood[index]
             dummyFood[index] = food.copy(isFavorite = !food.isFavorite)

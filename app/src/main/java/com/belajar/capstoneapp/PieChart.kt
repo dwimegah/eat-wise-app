@@ -77,8 +77,10 @@ fun PieChart(
     )
 
     // to play the animation only once when the function is Created or Recomposed
-    LaunchedEffect(key1 = true) {
+    var justonce = 0
+    LaunchedEffect(key1 = true && justonce == 0) {
         animationPlayed = true
+        justonce = 1
     }
 
     Row (

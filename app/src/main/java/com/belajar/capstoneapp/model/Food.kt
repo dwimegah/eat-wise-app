@@ -7,5 +7,10 @@ data class Food(
     val photoUrl: String,
     val description: String,
     val category: String,
+    val preparation: String,
+    val ingredients: String,
+    val carb: String,
+    val fat: String,
+    val protein: String,
     var isFavorite: Boolean = false
 )

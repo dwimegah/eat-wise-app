@@ -5,11 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.belajar.capstoneap.model.Food
 import com.belajar.capstoneap.model.Recipe
+import com.belajar.capstoneapp.data.DiaryRepository
 import com.belajar.capstoneapp.data.response.RecipeResponse
 import com.belajar.capstoneapp.data.retrofit.ApiConfig
 import com.belajar.capstoneapp.data.retrofit.ApiConfigDetail
+import com.belajar.capstoneapp.ui.common.UiState
 import com.google.gson.JsonObject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -17,7 +24,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val repository: DiaryRepository) : ViewModel() {
+    private val _uiState: MutableStateFlow<UiState<Food>> =
+        MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState<Food>>
+        get() = _uiState
+
     private val _detail = MutableLiveData<Recipe>()
     val detail: LiveData<Recipe> = _detail
 
@@ -79,6 +91,14 @@ class MainViewModel : ViewModel() {
 
         })
     }
+
+    fun getFoodById(foodId: String) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            _uiState.value = UiState.Success(repository.getFoodById(foodId))
+        }
+    }
+
     companion object{
         private const val TAG = "MainViewModel"
     }
